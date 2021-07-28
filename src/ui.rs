@@ -160,6 +160,11 @@ impl GameUI {
                     }
                     text.push(Spans::from(row_vec));
                 }
+                text.push(Spans::from(""));
+                text.push(Spans::from("f - flag"));
+                text.push(Spans::from("Enter - open cell"));
+                text.push(Spans::from("Up/Down/Left/Right - navigation"));
+                text.push(Spans::from("q - exit"));
 
                 let area = centered_rect(90, 60, size);
                 let paragraph = Paragraph::new(text.clone())
