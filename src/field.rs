@@ -76,21 +76,6 @@ impl Field {
         }
     }
 
-    pub fn print_raw(&self) {
-        for row in &self.grid {
-            for elem in row {
-                if elem.cell == CellType::Mine {
-                    print!("B ");
-                } else if elem.cell == CellType::Empty {
-                    print!("0 ");
-                } else if let CellType::Num(n) = elem.cell {
-                    print!("{} ", n);
-                }
-            }
-            println!(" ");
-        }
-        println!(" ");
-    }
 
     pub fn flag_at(&mut self,row: usize, column: usize) {
         if self.grid[row][column].state == CellState::Closed {
