@@ -25,7 +25,7 @@ pub struct Field {
     pub grid: Vec<Vec<Cell>>,
     pub width: usize,
     pub height: usize,
-    num_of_flags_left: isize,
+    pub num_of_flags_left: isize,
 }
 
 impl Field {
@@ -66,6 +66,16 @@ impl Field {
         row < self.height as isize && row >= 0 && column < self.width as isize && column >= 0
     }
 
+    pub fn uncover_mines(&mut self) {
+        for row in self.grid.iter_mut() {
+            for elem in row.iter_mut() {
+                if elem.cell == CellType::Mine {
+                    elem.state = CellState::Open;
+                }
+            }
+        }
+    }
+
     pub fn print_raw(&self) {
         for row in &self.grid {
             for elem in row {
@@ -85,8 +95,10 @@ impl Field {
     pub fn flag_at(&mut self,row: usize, column: usize) {
         if self.grid[row][column].state == CellState::Closed {
             self.grid[row][column].state = CellState::Flagged;
+            self.num_of_flags_left -= 1;
         } else if self.grid[row][column].state == CellState::Flagged {
             self.grid[row][column].state = CellState::Closed;
+            self.num_of_flags_left += 1;
         }
     }
 
@@ -110,10 +122,14 @@ impl Field {
                     if c < 0 { continue; }
                     if let Some(ct) = rt.get(c as usize) {
                         if ct.cell == CellType::Empty && ct.state == CellState::Closed {
-                            self.open_at(r, c)?;
+                            let mut result = false;
+                            self.open_at(r, c).unwrap_or_else(|()| result = true);
+                            if result {
+                                return Err(());
+                            }
                         }
                         if let CellType::Num(_) = ct.cell {
-                            self.grid[r as usize][c as usize].state = CellState::Open;
+                            if ct.state == CellState::Closed {self.grid[r as usize][c as usize].state = CellState::Open;}
                         }
                     }
                 }
@@ -144,10 +160,10 @@ impl Field {
     }
 
     pub fn game_over(&self) -> bool {
-        self.num_of_mines_left() == 0 && self.num_of_closed_left() == 0 && self.num_of_flags_left == 0 && !self.game_over()
+        self.num_of_mines_left() == 0 && self.num_of_closed_left() == 0 && self.num_of_flags_left == 0 
     }
 
-    fn num_of_mines_left(&self) -> usize {
+    pub fn num_of_mines_left(&self) -> usize {
         let mut result: usize = 0;
 
         for row in &self.grid {
@@ -167,7 +183,7 @@ impl Field {
         for row in &self.grid {
             result += row
                 .iter()
-                .filter(|cell| cell.state != CellState::Closed)
+                .filter(|cell| cell.state == CellState::Closed)
                 .count();
         }
 

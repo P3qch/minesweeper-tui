@@ -1,5 +1,5 @@
 #![allow(dead_code)]
-#![warn(clippy::all)]
+//#![warn(clippy::all)]
 
 use std::io;
 
@@ -25,7 +25,7 @@ fn main() {
     } else if buffer == "I" {
         f = field::Field::new(16,16, 40, 5, 5); 
     } else if buffer == "E" {
-        f = field::Field::new(30,16, 99, 5, 5); 
+        f = field::Field::new(16,30, 99, 5, 5); 
     } else { return; }
 
     let mut pp = ui::GameUI::new (f , 200) ;
