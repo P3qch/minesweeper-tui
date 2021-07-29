@@ -8,3 +8,7 @@ To run on your machine simply do the following (Using release is recommended as 
 ```bash
 cargo run --release
 ```
+
+## Demo
+
+<img title="" alt="Can't show image" src="image.png">
